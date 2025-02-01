@@ -5,7 +5,6 @@ grades_new = {
     'A+': 4, 'A': 3.7, 'A-': 3.4, 'B+': 3.2, 'B': 3, 'B-': 2.8, 'C+': 2.6, 'C': 2.4, 'C-': 2.2, 'D+': 2, 'D': 1.5, 'D-': 1, 'F': 0
 }
 
-# Function to calculate current semester GPA
 def calculate_current_semester_gpa():
     total_points = 0
     total_hours = 0
@@ -38,7 +37,6 @@ def calculate_current_semester_gpa():
         else:
             st.success(f"Your GPA for the current semester is: {round(current_gpa, 2)}")
 
-# Function to calculate CGPA over multiple semesters
 def calculate_total_gpa(previous_gpa, previous_semesters, current_gpa, current_semesters):
     total_gpa = (previous_gpa * previous_semesters + current_gpa) / current_semesters
     return round(total_gpa, 3)
@@ -53,17 +51,14 @@ def calculate_total_semesters_gpa():
     st.write(f"Your GPA over {num_semesters} semesters is: {total_gpa}")
 
 def main():
-    system_choice = st.selectbox("Choose your grading system:", ["New System", "Old System"])
+    option = st.selectbox("Choose an option:", ["Calculate GPA for the current semester", "Calculate GPA over multiple semesters"])
 
-    if system_choice == "New System":
-        st.subheader("Calculate GPA for the new system")
+    if option == "Calculate GPA for the current semester":
         calculate_current_semester_gpa()
-        st.write("Made in Earth By Mohammed Hassan")
-    elif system_choice == "Old System":
-        st.subheader("Calculate GPA for the old system")
-        calculate_current_semester_gpa()
-        st.write("Made in Earth By Mohammed Hassan")
+    elif option == "Calculate GPA over multiple semesters":
+        calculate_total_semesters_gpa()
 
 if __name__ == "__main__":
     st.title("GPA Calculator - Faculty of Artificial Intelligence, Kafr El-Sheikh University")
     main()
+    st.write("Made in Earth By Mohammed Hassan")
