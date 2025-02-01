@@ -28,16 +28,15 @@ st.markdown("""
 # Choose between systems
 system_option = st.radio("Choose Grading System:", ["Old System (Old Grading Scheme)", "New System (New Grading Scheme)"])
 
+# Show content based on system choice
 if system_option == "Old System (Old Grading Scheme)":
-    # Show options for the Old System GPA Calculation
     st.subheader("📌 Old System GPA Calculation")
     
+    # Option for GPA Calculation
     option = st.radio("Choose an option:", ["Calculate Semester GPA", "Calculate Cumulative GPA (CGPA)"])
 
-    # Current Semester GPA Calculation
     if option == "Calculate Semester GPA":
         st.subheader("📌 Calculate Your Current Semester GPA")
-
         grades_list = []
         subject_count = st.number_input("Number of subjects:", min_value=1, step=1, value=1)
 
@@ -50,10 +49,8 @@ if system_option == "Old System (Old Grading Scheme)":
             current_gpa = calculate_current_gpa(grades_list, grades_old)
             st.success(f"🎯 Your GPA for this semester is: **{current_gpa}**")
 
-    # Cumulative GPA (CGPA) Calculation
     elif option == "Calculate Cumulative GPA (CGPA)":
         st.subheader("📌 Calculate Your Cumulative GPA")
-
         num_semesters = st.number_input("How many semesters have you completed?", min_value=1, step=1, value=1)
 
         gpas = []
@@ -67,10 +64,9 @@ if system_option == "Old System (Old Grading Scheme)":
                 st.success(f"🎯 Your Cumulative GPA (CGPA) is: **{cgpa}**")
 
 elif system_option == "New System (New Grading Scheme)":
-    # Placeholder for the New System Calculation
     st.subheader("📌 New System GPA Calculation (Coming Soon!)")
     st.markdown("The GPA calculation for the new system will be added soon. Stay tuned!")
-    
+
 # Footer
 st.markdown("""
     <br><br>
