@@ -31,7 +31,7 @@ system_option = st.radio("Choose Grading System:", ["Old System (Old Grading Sch
 # Show content based on system choice
 if system_option == "Old System (Old Grading Scheme)":
     st.subheader("📌 Old System GPA Calculation")
-    
+
     # Option for GPA Calculation
     option = st.radio("Choose an option:", ["Calculate Semester GPA", "Calculate Cumulative GPA (CGPA)"])
 
