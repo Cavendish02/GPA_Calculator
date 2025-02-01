@@ -1,75 +1,69 @@
 import streamlit as st
 
-# Grade to GPA mapping (for the old system)
-grades_old = {'A+': 4, 'A': 3.7, 'B+': 3.3, 'B': 3, 'C+': 2.7, 'C': 2.4, 'D+': 2, 'D': 1.7, 'F': 0}
+# Define grade points for the new system
+grades_new = {
+    'A+': 4, 'A': 3.7, 'A-': 3.4, 'B+': 3.2, 'B': 3, 'B-': 2.8, 'C+': 2.6, 'C': 2.4, 'C-': 2.2, 'D+': 2, 'D': 1.5, 'D-': 1, 'F': 0
+}
 
-# Function to calculate semester GPA for the old system
-def calculate_current_gpa(grades_list, grades_mapping):
-    total_points = sum(grade * hours for grade, hours in grades_list)
-    total_hours = sum(hours for _, hours in grades_list)
-    return round(total_points / total_hours, 2) if total_hours > 0 else 0
+# Function to calculate current semester GPA
+def calculate_current_semester_gpa():
+    total_points = 0
+    total_hours = 0
+    has_failed = False
+    subject_number = 1
 
-# Function to calculate CGPA for the old system
-def calculate_cgpa(previous_gpas):
-    return round(sum(previous_gpas) / len(previous_gpas), 2) if previous_gpas else 0
+    while True:
+        grade = st.text_input(f"Enter letter grade for subject {subject_number} (A+, A, A-, B+, B, B-, C+, C, C-, D+, D, D-, F): ")
+        if not grade:
+            break
+        grade = grade.upper()
+        hours = st.number_input(f"Enter the number of hours for subject {subject_number}: ", min_value=1)
+        total_points += grades_new.get(grade, 0) * hours
+        total_hours += hours
+        if grade == 'F':
+            has_failed = True
 
-# Page settings
-st.set_page_config(page_title="GPA Calculator", layout="centered")
+        stop = st.selectbox("Do you want to stop entering subjects?", ["No", "Yes"])
+        if stop == "Yes":
+            break
 
-# Title
-st.title("📊 GPA Calculator")
+        subject_number += 1
 
-# Description
-st.markdown("""
-    This GPA calculator is specifically designed for the **Faculty of Artificial Intelligence**,  
-    **Kafr El-Sheikh University**. Choose your grading system (Old or New) and calculate your GPA.
-""")
+    if total_hours == 0:
+        st.warning("You did not enter any subjects.")
+    else:
+        current_gpa = total_points / total_hours
+        if has_failed:
+            st.error(f"Sorry, you have failed one or more subjects. Your GPA is: {round(current_gpa, 2)}")
+        else:
+            st.success(f"Your GPA for the current semester is: {round(current_gpa, 2)}")
 
-# Choose between systems
-system_option = st.radio("Choose Grading System:", ["Old System (Old Grading Scheme)", "New System (New Grading Scheme)"])
+# Function to calculate CGPA over multiple semesters
+def calculate_total_gpa(previous_gpa, previous_semesters, current_gpa, current_semesters):
+    total_gpa = (previous_gpa * previous_semesters + current_gpa) / current_semesters
+    return round(total_gpa, 3)
 
-# Show content based on system choice
-if system_option == "Old System (Old Grading Scheme)":
-    st.subheader("📌 Old System GPA Calculation")
+def calculate_total_semesters_gpa():
+    current_gpa = st.number_input("Enter the GPA for the current semester: ", min_value=0.0, max_value=4.0)
+    previous_gpa = st.number_input("Enter the total previous GPA: ", min_value=0.0, max_value=4.0)
+    previous_semesters = st.number_input("Enter the number of previous semesters: ", min_value=1)
+    num_semesters = previous_semesters + 1
+    total_gpa = calculate_total_gpa(previous_gpa, previous_semesters, current_gpa, num_semesters)
 
-    # Option for GPA Calculation
-    option = st.radio("Choose an option:", ["Calculate Semester GPA", "Calculate Cumulative GPA (CGPA)"])
+    st.write(f"Your GPA over {num_semesters} semesters is: {total_gpa}")
 
-    if option == "Calculate Semester GPA":
-        st.subheader("📌 Calculate Your Current Semester GPA")
-        grades_list = []
-        subject_count = st.number_input("Number of subjects:", min_value=1, step=1, value=1)
+def main():
+    system_choice = st.selectbox("Choose your grading system:", ["New System", "Old System"])
 
-        for i in range(subject_count):
-            grade = st.selectbox(f"Grade for Subject {i+1}:", list(grades_old.keys()), key=f"grade_{i}")
-            hours = st.number_input(f"Credit Hours for Subject {i+1}:", min_value=1, step=1, value=3, key=f"hours_{i}")
-            grades_list.append((grades_old[grade], hours))
+    if system_choice == "New System":
+        st.subheader("Calculate GPA for the new system")
+        calculate_current_semester_gpa()
+        st.write("Made in Earth By Mohammed Hassan")
+    elif system_choice == "Old System":
+        st.subheader("Calculate GPA for the old system")
+        calculate_current_semester_gpa()
+        st.write("Made in Earth By Mohammed Hassan")
 
-        if st.button("Calculate GPA"):
-            current_gpa = calculate_current_gpa(grades_list, grades_old)
-            st.success(f"🎯 Your GPA for this semester is: **{current_gpa}**")
-
-    elif option == "Calculate Cumulative GPA (CGPA)":
-        st.subheader("📌 Calculate Your Cumulative GPA")
-        num_semesters = st.number_input("How many semesters have you completed?", min_value=1, step=1, value=1)
-
-        gpas = []
-        for i in range(num_semesters):
-            gpa = st.number_input(f"Enter GPA for Semester {i+1}:", min_value=0.0, max_value=4.0, step=0.01, key=f"gpa_{i}")
-            gpas.append(gpa)
-
-        if st.button("Calculate CGPA"):
-            if len(gpas) > 0:
-                cgpa = calculate_cgpa(gpas)
-                st.success(f"🎯 Your Cumulative GPA (CGPA) is: **{cgpa}**")
-
-elif system_option == "New System (New Grading Scheme)":
-    st.subheader("📌 New System GPA Calculation (Coming Soon!)")
-    st.markdown("The GPA calculation for the new system will be added soon. Stay tuned!")
-
-# Footer
-st.markdown("""
-    <br><br>
-    <hr>
-    <center>Made in Earth By Mohammed Hassan</center>
-""", unsafe_allow_html=True)
+if __name__ == "__main__":
+    st.title("GPA Calculator - Faculty of Artificial Intelligence, Kafr El-Sheikh University")
+    main()
