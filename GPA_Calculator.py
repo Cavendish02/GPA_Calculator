@@ -18,23 +18,30 @@ def calculate_gpa(grades_dict):
     subject_number = 1
 
     while True:
+        # User input for grade
         grade = st.text_input(f"Enter letter grade for subject {subject_number} (A+, A, A-, B+, B, B-, C+, C, C-, D+, D, D-, F): ")
-        if not grade:
+        if grade == "":
             break
         grade = grade.upper()
-        hours = st.number_input(f"Enter the number of hours for subject {subject_number}: ", min_value=1)
         
+        # User input for credit hours
+        hours = st.number_input(f"Enter the number of hours for subject {subject_number}: ", min_value=1)
+
+        # Update total points and total hours
         total_points += grades_dict.get(grade, 0) * hours
         total_hours += hours
+        
+        # Check for failure in any subject
         if grade == 'F':
             has_failed = True
 
+        subject_number += 1
+
+        # Button to stop adding subjects
         stop = st.selectbox("Do you want to stop entering subjects?", ["No", "Yes"])
         if stop == "Yes":
             break
-
-        subject_number += 1
-
+    
     if total_hours == 0:
         st.warning("You did not enter any subjects.")
     else:
