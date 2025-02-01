@@ -19,6 +19,13 @@ st.set_page_config(page_title="GPA Calculator", layout="centered")
 # Title
 st.title("📊 GPA Calculator")
 
+# Description
+st.markdown("""
+    This GPA calculator is specifically designed for the **Faculty of Artificial Intelligence**,  
+    **Kafr El-Sheikh University**. Use it to easily calculate your **Current Semester GPA** or  
+    **Cumulative GPA (CGPA)** based on your grades and credit hours.
+""")
+
 # Choose between semester GPA or CGPA
 option = st.radio("Choose an option:", ["Calculate Semester GPA", "Calculate Cumulative GPA (CGPA)"])
 
@@ -53,3 +60,10 @@ elif option == "Calculate Cumulative GPA (CGPA)":
         if len(gpas) > 0:
             cgpa = calculate_cgpa(gpas)
             st.success(f"🎯 Your Cumulative GPA (CGPA) is: **{cgpa}**")
+
+# Footer
+st.markdown("""
+    <br><br>
+    <hr>
+    <center>Made in Earth By Mohammed Hassan</center>
+""", unsafe_allow_html=True)
